@@ -8,6 +8,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
+
 public class MyWebAppInitializer implements WebApplicationInitializer{
 
     @Override

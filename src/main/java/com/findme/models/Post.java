@@ -2,8 +2,8 @@ package com.findme.models;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.findme.helpers.LocalDateDeserializer;
-import com.findme.helpers.LocalDateSerializer;
+import com.findme.utils.LocalDateDeserializer;
+import com.findme.utils.LocalDateSerializer;
 
 import javax.persistence.*;
 import java.util.Date;

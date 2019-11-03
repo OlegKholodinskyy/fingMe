@@ -1,4 +1,4 @@
-package com.findme.helpers;
+package com.findme.utils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

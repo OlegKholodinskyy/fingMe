@@ -2,12 +2,15 @@ package com.findme.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findme.controller.UserController;
+import com.findme.dao.UserDaoInterface;
 import com.findme.dao.UserDao;
-import com.findme.helpers.GeneralMapper;
+import com.findme.utils.GeneralMapper;
 import com.findme.models.Message;
 import com.findme.models.Post;
 import com.findme.models.User;
+import com.findme.service.ServiceInterface;
 import com.findme.service.UserService;
+import com.findme.utils.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +22,7 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -31,9 +35,10 @@ import javax.persistence.EntityManagerFactory;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com"})
+@EnableTransactionManagement
+@ComponentScan(basePackages = {"com.findme"})
 public class AppConfig implements WebMvcConfigurer {
-    // todo
+
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -67,7 +72,7 @@ public class AppConfig implements WebMvcConfigurer {
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
         dataSource.setUrl("jdbc:oracle:thin:@gromcode-lessons.cmbqecodcoqo.us-east-2.rds.amazonaws.com:1521:ORCL");
         dataSource.setUsername("main");
-        dataSource.setPassword("24390000");
+        dataSource.setPassword("");
         return dataSource;
     }
 
@@ -76,7 +81,7 @@ public class AppConfig implements WebMvcConfigurer {
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
         LocalContainerEntityManagerFactoryBean en = new LocalContainerEntityManagerFactoryBean();
         en.setDataSource(dataSource());
-        en.setPackagesToScan(new String[]{"com.findme"});
+        en.setPackagesToScan(new String[]{"com.findme.models"});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         en.setJpaVendorAdapter(vendorAdapter);
         return en;
@@ -88,6 +93,7 @@ public class AppConfig implements WebMvcConfigurer {
         transactionManager.setEntityManagerFactory(emf);
         return transactionManager;
     }
+
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -108,6 +114,7 @@ public class AppConfig implements WebMvcConfigurer {
     public Post post(){
         return new Post();
     }
+
     @Bean
     public Message message(){
         return new Message();
@@ -115,16 +122,22 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Bean
     public UserController userController (){
-        return new UserController(generalMapper(), userService());
+        return new UserController(generalMapper(), userService(),userValidator());
     }
 
     @Bean
-    public UserService userService() {
+    public ServiceInterface<User> userService() {
         return new UserService(userDao());
     }
 
     @Bean
-    public UserDao userDao(){
+    public UserDaoInterface<User> userDao(){
         return new UserDao();
     }
+
+    @Bean
+    public UserValidator userValidator(){
+        return new UserValidator();
+    }
+
 }

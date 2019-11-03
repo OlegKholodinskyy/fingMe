@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Find me</title>
+</head>
+<body>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>FIRST_NAME</th>
+            <th>LAST_NAME</th>
+            <th>PHONE</th>
+            <th>COUNTRY</th>
+            <th>CITY</th>
+            <th>AGE</th>
+            <th>DATE_REGISTERED</th>
+            <th>DATE_LAST_ACTIVE</th>
+            <th>RELATIONSHIPS_STATUS</th>
+            <th>RELIGION</th>
+            <th>SCHOOL</th>
+            <th>UNIVERSITY</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="user, stat : ${users}">
+            <td th:text="${user.getId()}" ></td>
+            <td th:text="${user.getFirstName()}"></td>
+            <td th:text="${user.getLastName()}" ></td>
+
+            <td th:text="${user.getPhone()}"></td>
+            <td th:text="${user.getCountry()}" ></td>
+
+            <td th:text="${user.getCity()}"></td>
+            <td th:text="${user.getAge()}" ></td>
+
+            <td th:text="${user.getDateRegistered()}"></td>
+            <td th:text="${user.getDateLastActive()}" ></td>
+
+            <td th:text="${user.getRelationshipStatus()}"></td>
+            <td th:text="${user.getReligion()}" ></td>
+
+            <td th:text="${user.getSchool()}"></td>
+            <td th:text="${user.getUniversity()}" ></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
