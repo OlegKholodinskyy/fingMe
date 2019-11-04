@@ -14,4 +14,6 @@ public interface ServiceInterface<T> {
     public T get (Long id);
 
     public List<T> getAll();
+    public T update (T t);
+    public void delete(Long id);
 }

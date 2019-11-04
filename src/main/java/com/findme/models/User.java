@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.findme.utils.LocalDateDeserializer;
 import com.findme.utils.LocalDateSerializer;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,8 +15,10 @@ import java.util.List;
 public class User {
 
     private Long id;
+    @NotBlank(message = "User name is required")
     private String firstName;
     private String lastName;
+    @NotBlank(message = "Phone is required")
     private String phone;
     // TODO from existed data
     private String country;

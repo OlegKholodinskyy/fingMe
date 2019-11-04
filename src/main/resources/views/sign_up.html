@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Find me</title>
@@ -9,22 +8,64 @@
 </div>
 
 
-<form action="/users/newUser" method="post">
-    <input name="firstName" type="text" placeholder="firstName">
-    <input name="lastName" type="text" placeholder="lastName">
-    <input name="phone" type="text" placeholder="phone">
-    <input name="country" type="text" placeholder="country">
-    <input name="city" type="text" placeholder="city">
+<form action="/users/newUser" method="post" modelAttribute="user">
+    <table width="100%" border="0" cellpadding="4">
+        <tr>
+            <td>
+            <input name="firstName" type="text" placeholder="firstName" required>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input name="lastName" type="text" placeholder="lastName">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input name="phone" type="text" placeholder="phone" required>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input name="country" type="text" placeholder="country" >
+            </td>
+        </tr>
 
-    <input name="age" type="text" placeholder="age">
-    <input name="relationshipStatus" type="text" placeholder="relationshipStatus">
-    <input name="religion" type="text" placeholder="religion">
-    <input name="school" type="d" placeholder="school">
-    <input name="university" type="d" placeholder="university">
+        <tr>
+            <td>
+                <input name="city" type="text" placeholder="city" >
+            </td>
+        </tr>
 
-
-    <input type="submit">
-
+        <tr>
+            <td>
+                <input name="age" type="text" placeholder="age" >
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input name="relationshipStatus" type="text" placeholder="relationshipStatus">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input name="religion" type="text" placeholder="religion" >
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input name="school" type="text" placeholder="school" >
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input name="university" type="text" placeholder="university" >
+            </td>
+        </tr>
+        <tr>
+            <td><input type="submit"></td>
+        </tr>
+    </table>
 </form>
 </body>
 </html>

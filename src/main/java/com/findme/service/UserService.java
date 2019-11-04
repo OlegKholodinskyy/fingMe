@@ -34,12 +34,23 @@ public class UserService implements ServiceInterface<User> {
         return users;
     }
 
+    @Override
+    public User update(User user) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long id) {
+        //todo
+    }
+
 
     @Override
     @Transactional
     public User save(User user ) {
         Date date = new Date();
         user.setDateRegistered(date);
+        user.setDateLastActive(date);
         return (User) userDao.save(user);
     }
 }
