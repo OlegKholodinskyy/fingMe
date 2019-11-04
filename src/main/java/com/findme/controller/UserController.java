@@ -1,16 +1,14 @@
 package com.findme.controller;
 
 import com.findme.exception.BadRequestException;
-import com.findme.exception.InternalServerError;
 import com.findme.exception.NotFoundException;
+import com.findme.exception.ObjectExistException;
 import com.findme.utils.GeneralMapper;
 import com.findme.models.User;
 import com.findme.service.ServiceInterface;
 import com.findme.utils.UserValidator;
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -45,16 +43,12 @@ public class UserController {
         User user = null;
         try {
             user = (User) serviceInterface.get(Long.parseLong(userId));
-
-            if (user == null) {
-                model.addAttribute("userId", userId);
-                return "errorNotFound";
-            }
             model.addAttribute("user", user);
             return "profile";
-        } catch (NumberFormatException e) {
-            model.addAttribute("userId", userId);
-            return "errorNumberFormat";
+         } catch (ObjectExistException | NotFoundException e) {
+            model.addAttribute("codeError", "not found - 404");
+            model.addAttribute("methodName", new Object() {}.getClass().getEnclosingMethod().getName());
+            return "errorPersistence";
         }
     }
 
@@ -89,21 +83,49 @@ public class UserController {
     }
 
     @PutMapping(path = "/users/updateUser", produces = "text/plain")
-    public ResponseEntity<String> update(HttpServletRequest req){
+    public ResponseEntity<String> update(HttpServletRequest req, BindingResult result) {
         try {
             User user = generalMapper.mappingObject(req, User.class);
-            return new ResponseEntity<String>("User was updated succesfully. " + serviceInterface.update(user).toString().toString(), HttpStatus.OK);
+            //  есть ли уже такой пользователь с тем же номером телефона
+            userValidator.validate(user, result);
+
+            if (result.hasErrors()) {
+                StringBuilder sb = new StringBuilder("");
+                List<FieldError> errors = result.getFieldErrors();
+                for (FieldError error : errors) {
+                    sb.append(error.getObjectName() + " - " + error.getDefaultMessage() + "\n");
+                }
+                return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            return new ResponseEntity<String>("User was updated succesfully. " + serviceInterface.update(user).toString(), HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<String>("IOException : " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR); //500
-         } catch (HibernateException e) {
+        } catch (HibernateException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);  //500
-         }
+        } catch (ObjectExistException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
+    /*
+           http://localhost:8080//users/deleteUser?idUser=1005
+    */
     @DeleteMapping(path = "/users/deleteUser", produces = "text/plain")
-    public ResponseEntity<String>  delete(HttpServletRequest req)throws BadRequestException{
-        //todo
-       return  null;
+    public ResponseEntity<String> delete(HttpServletRequest req) throws BadRequestException {
+        String idUser = req.getParameter("idUser");
+        try {
+            serviceInterface.delete(Long.parseLong(idUser));
+            return new ResponseEntity<String>("User id: " + idUser + " was deleted.", HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<String>("IOException " + e.getMessage(), HttpStatus.BAD_REQUEST);
+         } catch (HibernateException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);  //500
+        } catch (ObjectExistException | NotFoundException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
 

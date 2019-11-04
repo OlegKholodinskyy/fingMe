@@ -16,6 +16,7 @@ public class UserDao implements UserDaoInterface<User> {
 
     private String getAllString = "SELECT * FROM USER_TABLE";
     private String getOneString = "SELECT * FROM USER_TABLE WHERE PHONE = ?";
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -33,12 +34,12 @@ public class UserDao implements UserDaoInterface<User> {
 
     @Override
     public User update(User user) {
-        return null;
+        return entityManager.merge(user);
     }
 
     @Override
-    public void delete(User user) throws DataIntegrityViolationException {
-
+    public void delete(User user) {
+        entityManager.remove(user);
     }
 
     @Override

@@ -1,9 +1,13 @@
 package com.findme.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.findme.controller.PostController;
 import com.findme.controller.UserController;
+import com.findme.dao.PostDao;
+import com.findme.dao.PostDaoInterface;
 import com.findme.dao.UserDaoInterface;
 import com.findme.dao.UserDao;
+import com.findme.service.PostService;
 import com.findme.utils.GeneralMapper;
 import com.findme.models.Message;
 import com.findme.models.Post;
@@ -140,4 +144,17 @@ public class AppConfig implements WebMvcConfigurer {
         return new UserValidator();
     }
 
+    @Bean
+    public PostController postController(){
+        return  new PostController(generalMapper(), postService());
+    }
+
+    @Bean
+    public ServiceInterface<Post> postService() {
+        return new PostService(postDao());
+    }
+    @Bean
+    public PostDaoInterface<Post> postDao(){
+        return new PostDao();
+    }
 }

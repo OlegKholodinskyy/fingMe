@@ -6,6 +6,7 @@ import com.findme.utils.LocalDateDeserializer;
 import com.findme.utils.LocalDateSerializer;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -15,7 +16,7 @@ public class Post {
 
     private Long id;
     private String message;
-    private Date datePosted;
+    private LocalDate datePosted;
     private User userPosted;
     //TODO
     //levels permissions;
@@ -25,8 +26,14 @@ public class Post {
     public Post() {
     }
 
-    public Post(Long id, String message, Date datePosted, User userPosted) {
+    public Post(Long id, String message, LocalDate datePosted, User userPosted) {
         this.id = id;
+        this.message = message;
+        this.datePosted = datePosted;
+        this.userPosted = userPosted;
+    }
+
+    public Post(String message, LocalDate datePosted, User userPosted) {
         this.message = message;
         this.datePosted = datePosted;
         this.userPosted = userPosted;
@@ -40,7 +47,7 @@ public class Post {
         this.message = message;
     }
 
-    public void setDatePosted(Date datePosted) {
+    public void setDatePosted(LocalDate datePosted) {
         this.datePosted = datePosted;
     }
 
@@ -64,7 +71,7 @@ public class Post {
     @Column(name = "DATE_POSTED")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
-    public Date getDatePosted() {
+    public LocalDate getDatePosted() {
         return datePosted;
     }
 
